@@ -8,7 +8,6 @@ import (
 	"github.com/shiguanghuxian/micro-base/kit/endpoint"
 	"github.com/shiguanghuxian/micro-base/kit/service"
 	"github.com/shiguanghuxian/micro-base/pb"
-	"go.uber.org/zap"
 )
 
 type grpcServer struct {
@@ -16,10 +15,10 @@ type grpcServer struct {
 }
 
 // NewGRPCServer 创建grpc服务
-func NewGRPCServer(endpoints endpoint.Endpoints, s service.Service, logger *zap.SugaredLogger) pb.HelloServer {
+func NewGRPCServer(endpoints endpoint.Endpoints, s service.Service, logger *log.Log) pb.HelloServer {
 	// 配置
 	options := []grpctransport.ServerOption{
-		grpctransport.ServerErrorLogger(log.NewLog(logger)),
+		grpctransport.ServerErrorLogger(logger),
 	}
 
 	return &grpcServer{

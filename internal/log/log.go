@@ -1,8 +1,24 @@
 package log
 
 import (
+	"log"
+
+	"github.com/shiguanghuxian/micro-base/internal/config"
 	"go.uber.org/zap"
 )
+
+var (
+	Logger *Log
+)
+
+func init() {
+	mode := config.GetMode()
+	sugar, err := InitLogger("./logs", mode == "dev")
+	if err != nil {
+		log.Panicln(err)
+	}
+	Logger = NewLog(sugar)
+}
 
 // Log 实现go-kit日志接口
 type Log struct {

@@ -3,15 +3,15 @@ package logging
 import (
 	"context"
 
+	"github.com/shiguanghuxian/micro-base/internal/log"
 	"github.com/shiguanghuxian/micro-base/kit/service"
-	"go.uber.org/zap"
 )
 
 // Middleware 中间件
 type Middleware func(service.Service) service.Service
 
 // LoggingMiddleware 注册日志中间件
-func LoggingMiddleware(logger *zap.SugaredLogger) Middleware {
+func LoggingMiddleware(logger *log.Log) Middleware {
 	// logger1, _ := zap.NewProduction()
 	// sugar := logger1.Sugar()
 
@@ -21,7 +21,7 @@ func LoggingMiddleware(logger *zap.SugaredLogger) Middleware {
 }
 
 type loggingMiddleware struct {
-	logger *zap.SugaredLogger
+	logger *log.Log
 	next   service.Service
 }
 
@@ -29,9 +29,9 @@ type loggingMiddleware struct {
 func (mw loggingMiddleware) PostHello(ctx context.Context, name string) (word string, err error) {
 	defer func() {
 		if err != nil {
-			mw.logger.Error("method", "PostHello", "input name", name, "output word", word)
+			mw.logger.Errorw("PostHello error", "method", "PostHello", "input name", name, "output word", word)
 		} else {
-			mw.logger.Info("method", "PostHello", "input name", name, "output word", word)
+			mw.logger.Infow("PostHello info", "method", "PostHello", "input name", name, "output word", word)
 		}
 	}()
 	word, err = mw.next.PostHello(ctx, name)

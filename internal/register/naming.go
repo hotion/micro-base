@@ -2,7 +2,6 @@ package register
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"strings"
 	"time"
@@ -14,7 +13,7 @@ import (
 func Register(etcdAddr, name string, addr string, ttl int64) error {
 	var err error
 
-	fmt.Println("+++++++", name)
+	// fmt.Println("+++++++", name)
 
 	if cli == nil {
 		cli, err = clientv3.New(clientv3.Config{

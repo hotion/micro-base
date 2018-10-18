@@ -10,6 +10,8 @@ const (
 	DEFAULT_GRPC_ADDR string = "127.0.0.1:28080"
 	// DEFAULT_SVC_NAME 默认服务名
 	DEFAULT_SVC_NAME string = "project/default"
+	// 当前运行环境，dev or pro
+	DEFAULT_MODE string = "dev"
 )
 
 // GetETCDAddr 读取etcd服务地址
@@ -37,4 +39,13 @@ func GetSvcName() string {
 		return DEFAULT_SVC_NAME
 	}
 	return svcName
+}
+
+// GetMode 当前运行环境
+func GetMode() string {
+	mode := os.Getenv("MODE")
+	if mode == "" {
+		return DEFAULT_MODE
+	}
+	return mode
 }
