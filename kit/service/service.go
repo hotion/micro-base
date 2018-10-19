@@ -4,6 +4,12 @@ import (
 	"context"
 )
 
+// ExternalService 对外提供服务接口
+type ExternalService interface {
+	// 通过用户名密码登录
+	Login(ctx context.Context, username, password string) (string, error)
+}
+
 // Service 定义服务
 type Service interface {
 	PostHello(ctx context.Context, name string) (string, error)
