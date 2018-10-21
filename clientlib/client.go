@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	svcName = config.GetSvcName()
+	svcName = config.GetSvcName("grpc")
 )
 
 // NewGRPCClient 创建grpc客户端
