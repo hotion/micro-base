@@ -2,6 +2,7 @@ package main
 
 import (
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,9 +19,10 @@ import (
 )
 
 var (
-	svcName  = config.GetSvcName()
-	VERSION  string // 程序版本
-	GIT_HASH string // git hash
+	grpcSvcName = config.GetSvcName("grpc")
+	httpSvcName = config.GetSvcName("http")
+	VERSION     string // 程序版本
+	GIT_HASH    string // git hash
 )
 
 func main() {
@@ -37,6 +39,8 @@ func main() {
 
 	// 创建所有端点
 	endpoints := endpoint.MakeServerEndpoints(s)
+
+	/* grpc */
 
 	// transport grpc方式
 	var grpcServer pb.HelloServer
@@ -58,19 +62,49 @@ func main() {
 
 		err = baseServer.Serve(grpcListener)
 		if err != nil {
-			logger.Panicf("TCP监听错误:%v", err)
+			logger.Panicf("TCP启动错误:%v", err)
 			return
 		}
 	}()
 
-	// 注册服务
-	go register.Register(config.GetETCDAddr(), svcName, config.GetGRPCAddr(), 5)
+	// 注册服务 grpc
+	go register.Register(config.GetETCDAddr(), grpcSvcName, config.GetGRPCAddr(), 5)
+
+	/* http */
+
+	// transport http方式
+	var httpHandler http.Handler
+	{
+		httpHandler = transport.NewHTTPHandler(endpoints, s, logger)
+	}
+
+	// 启动http监听
+	go func() {
+		httpListener, err := net.Listen("tcp", config.GetHTTPAddr())
+		if err != nil {
+			logger.Panicf("http监听错误:%v", err)
+			return
+		}
+		logger.Infof("HTTP监听成功:%s", config.GetHTTPAddr())
+
+		err = http.Serve(httpListener, httpHandler)
+		if err != nil {
+			logger.Panicf("HTTP启动错误:%v", err)
+			return
+		}
+	}()
+
+	// 注册服务 http
+	go register.Register(config.GetETCDAddr(), httpSvcName, config.GetHTTPAddr(), 5)
 
 	// 监听退出信号
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL, syscall.SIGHUP, syscall.SIGQUIT)
 	sig := <-ch
-	register.UnRegister(svcName, config.GetGRPCAddr())
+	// 注销服务
+	register.UnRegister(grpcSvcName, config.GetGRPCAddr())
+	register.UnRegister(httpSvcName, config.GetHTTPAddr())
+
 	if i, ok := sig.(syscall.Signal); ok {
 		os.Exit(int(i))
 	} else {

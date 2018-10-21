@@ -10,6 +10,8 @@ import (
 	"github.com/shiguanghuxian/micro-base/pb"
 )
 
+/* grpc方式对外提供服务 */
+
 type grpcServer struct {
 	postHello grpctransport.Handler
 }

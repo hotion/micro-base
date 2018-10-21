@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"atisafe.com/tools/logger"
 	"github.com/jinzhu/gorm"
 	"github.com/shiguanghuxian/micro-base/internal/config"
 	"github.com/shiguanghuxian/micro-base/internal/etcdcli"
+	"github.com/shiguanghuxian/micro-base/internal/log"
 )
 
 var (
@@ -23,25 +23,27 @@ func init() {
 	// 初始化MasterDB
 	cfg, err := config.GetDBConfig(etcdcli.EtcdCli, "master")
 	if err != nil {
-		// ### log
+		log.Logger.Panicw("Get db master configuration error", "err", err)
 	}
-	logger.Infoln(logger.INFO_MySQL_CONN, "db conn master")
+	log.Logger.Infow("Start connecting to database master node")
 	// 创建数据库连接
 	MasterDB, err = NewDbClient(cfg)
 	if err != nil {
-		// ### log
+		log.Logger.Panicw("Connect database master node error", "err", err)
 	}
-	logger.Infoln(logger.INFO_MySQL_CONN, "db conn master end")
+	log.Logger.Infow("Connect database master node successfully")
 	// 初始化SlaveDB
 	cfg, err = config.GetDBConfig(etcdcli.EtcdCli, "slave")
 	if err != nil {
-		// ### log
+		log.Logger.Panicw("Get db slave configuration error", "err", err)
 	}
+	log.Logger.Infow("Start connecting to database slave node")
 	// 创建数据库连接
 	SlaveDB, err = NewDbClient(cfg)
 	if err != nil {
-		// ### log
+		log.Logger.Panicw("Connect database slave node error", "err", err)
 	}
+	log.Logger.Infow("Connect database slave node successfully")
 }
 
 // NewDbClient 创建数据库连接
@@ -82,7 +84,7 @@ func NewDbClient(cfg *config.DbConfig) (*gorm.DB, error) {
 			// ping
 			err = db.DB().Ping()
 			if err != nil {
-				logger.Infoln(logger.ERROR_MySQL_CONN, err)
+				log.Logger.Errorw("mysql ping error", "err", err)
 			}
 			// 间隔30s ping一次
 			time.Sleep(time.Second * 30)

@@ -1,7 +1,8 @@
 package clientlib
 
 import (
-	"fmt"
+	"log"
+	"time"
 
 	"github.com/shiguanghuxian/micro-base/internal/config"
 	"github.com/shiguanghuxian/micro-base/internal/register"
@@ -23,9 +24,9 @@ func NewGRPCClient(etcdAddr string) (pb.HelloClient, error) {
 	r := register.NewResolver(etcdAddr)
 	resolver.Register(r)
 
-	fmt.Println(r.Scheme() + "://" + svcName)
+	log.Println(r.Scheme() + "://" + svcName)
 
-	conn, err := grpc.Dial(r.Scheme()+"://author/"+svcName, grpc.WithBalancerName("round_robin"), grpc.WithInsecure())
+	conn, err := grpc.Dial(r.Scheme()+"://author/"+svcName, grpc.WithBalancerName("round_robin"), grpc.WithInsecure(), grpc.WithTimeout(15*time.Second))
 	if err != nil {
 		return nil, err
 	}

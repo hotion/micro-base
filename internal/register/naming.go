@@ -18,7 +18,7 @@ func Register(etcdAddr, name string, addr string, ttl int64) error {
 	if cli == nil {
 		cli, err = clientv3.New(clientv3.Config{
 			Endpoints:   strings.Split(etcdAddr, ";"),
-			DialTimeout: 15 * time.Second,
+			DialTimeout: 10 * time.Second,
 		})
 		if err != nil {
 			return err

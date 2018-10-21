@@ -1,12 +1,12 @@
 package etcdcli
 
 import (
-	"log"
 	"strings"
 	"time"
 
 	"github.com/coreos/etcd/clientv3"
 	"github.com/shiguanghuxian/micro-base/internal/config"
+	"github.com/shiguanghuxian/micro-base/internal/log"
 )
 
 /* etcd3 连接对象 */
@@ -24,6 +24,6 @@ func init() {
 		DialTimeout: 15 * time.Second,
 	})
 	if err != nil {
-		log.Panicln(err)
+		log.Logger.Panicw("Create etcd3 client error", "err", err)
 	}
 }

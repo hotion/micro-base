@@ -12,9 +12,6 @@ type Middleware func(service.Service) service.Service
 
 // LoggingMiddleware 注册日志中间件
 func LoggingMiddleware(logger *log.Log) Middleware {
-	// logger1, _ := zap.NewProduction()
-	// sugar := logger1.Sugar()
-
 	return func(next service.Service) service.Service {
 		return loggingMiddleware{logger, next}
 	}
