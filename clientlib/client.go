@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/shiguanghuxian/micro-base/internal/config"
-	"github.com/shiguanghuxian/micro-base/internal/register"
+	"github.com/shiguanghuxian/micro-common/config"
+	"github.com/shiguanghuxian/micro-common/register"
 	"github.com/shiguanghuxian/micro-base/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/resolver"

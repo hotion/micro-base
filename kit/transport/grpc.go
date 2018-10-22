@@ -4,10 +4,10 @@ import (
 	"context"
 
 	grpctransport "github.com/go-kit/kit/transport/grpc"
-	"github.com/shiguanghuxian/micro-base/internal/log"
 	"github.com/shiguanghuxian/micro-base/kit/endpoint"
 	"github.com/shiguanghuxian/micro-base/kit/service"
 	"github.com/shiguanghuxian/micro-base/pb"
+	"github.com/shiguanghuxian/micro-common/log"
 )
 
 /* grpc方式对外提供服务 */

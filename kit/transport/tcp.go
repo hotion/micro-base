@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 
 	uuid "github.com/satori/go.uuid"
-	"github.com/shiguanghuxian/micro-base/internal/log"
 	"github.com/shiguanghuxian/micro-base/kit/endpoint"
 	"github.com/shiguanghuxian/micro-base/kit/service"
 	"github.com/shiguanghuxian/micro-base/kit/transport/tcppacket"
+	"github.com/shiguanghuxian/micro-common/log"
 	"github.com/shiguanghuxian/tcplibrary"
 )
 

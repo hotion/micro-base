@@ -7,14 +7,14 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/shiguanghuxian/micro-base/internal/config"
-	"github.com/shiguanghuxian/micro-base/internal/log"
-	"github.com/shiguanghuxian/micro-base/internal/register"
 	"github.com/shiguanghuxian/micro-base/kit/endpoint"
 	"github.com/shiguanghuxian/micro-base/kit/middleware/logging"
 	"github.com/shiguanghuxian/micro-base/kit/service"
 	"github.com/shiguanghuxian/micro-base/kit/transport"
 	"github.com/shiguanghuxian/micro-base/pb"
+	"github.com/shiguanghuxian/micro-common/config"
+	"github.com/shiguanghuxian/micro-common/log"
+	"github.com/shiguanghuxian/micro-common/register"
 	"google.golang.org/grpc"
 )
 

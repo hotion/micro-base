@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
+
+	"github.com/shiguanghuxian/micro-base/model"
 )
 
 // ExternalService 对外提供服务接口
 type ExternalService interface {
 	// 通过用户名密码登录
-	Login(ctx context.Context, username, password string) (string, error)
+	Login(ctx context.Context, username, password string) (*model.User, error)
 }
 
 // Service 定义服务

@@ -7,9 +7,9 @@ import (
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
-	"github.com/shiguanghuxian/micro-base/internal/log"
 	"github.com/shiguanghuxian/micro-base/kit/endpoint"
 	"github.com/shiguanghuxian/micro-base/kit/service"
+	"github.com/shiguanghuxian/micro-common/log"
 )
 
 /* http方式对外提供服务 */

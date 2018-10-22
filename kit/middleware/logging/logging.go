@@ -3,8 +3,8 @@ package logging
 import (
 	"context"
 
-	"github.com/shiguanghuxian/micro-base/internal/log"
 	"github.com/shiguanghuxian/micro-base/kit/service"
+	"github.com/shiguanghuxian/micro-common/log"
 )
 
 // Middleware 中间件
