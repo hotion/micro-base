@@ -14,6 +14,17 @@ import (
 // 测试代码
 
 func main() {
+	log.SetFlags(log.Lshortfile | log.LstdFlags)
+
+	// grpc 测试 go run main.go
+	// grpcHello()
+	// tcp测试 go run main.go tcp.go
+	tcpHello()
+
+	select {}
+}
+
+func grpcHello() {
 	c, err := clientlib.NewGRPCClient("")
 	if err != nil {
 		log.Println(err)
@@ -27,5 +38,4 @@ func main() {
 			log.Printf("响应:%s\n", resp.GetWord())
 		}
 	}
-
 }

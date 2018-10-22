@@ -21,6 +21,7 @@ import (
 var (
 	grpcSvcName = config.GetSvcName("grpc")
 	httpSvcName = config.GetSvcName("http")
+	tcpSvcName  = config.GetSvcName("tcp")
 	VERSION     string // 程序版本
 	GIT_HASH    string // git hash
 )
@@ -97,6 +98,23 @@ func main() {
 	// 注册服务 http
 	go register.Register(config.GetETCDAddr(), httpSvcName, config.GetHTTPAddr(), 5)
 
+	/* tcp */
+	go func() {
+		tcpServer, err := transport.NewTCPHandler(endpoints, s, logger)
+		if err != nil {
+			logger.Panicf("tcp服务创建错误错误:%v", err)
+			return
+		}
+		err = tcpServer.ListenAndServe(config.GetTCPAddr())
+		if err != nil {
+			logger.Panicf("TCP启动错误:%v", err)
+			return
+		}
+	}()
+
+	// 注册服务 tcp
+	go register.Register(config.GetETCDAddr(), httpSvcName, config.GetTCPAddr(), 5)
+
 	// 监听退出信号
 	ch := make(chan os.Signal)
 	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL, syscall.SIGHUP, syscall.SIGQUIT)
@@ -104,6 +122,7 @@ func main() {
 	// 注销服务
 	register.UnRegister(grpcSvcName, config.GetGRPCAddr())
 	register.UnRegister(httpSvcName, config.GetHTTPAddr())
+	register.UnRegister(tcpSvcName, config.GetTCPAddr())
 
 	if i, ok := sig.(syscall.Signal); ok {
 		os.Exit(int(i))

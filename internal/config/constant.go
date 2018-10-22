@@ -10,6 +10,8 @@ const (
 	DEFAULT_HTTP_ADDR string = "127.0.0.1:18080"
 	// DEFAULT_GRPC_ADDR 默认grpc监听地址
 	DEFAULT_GRPC_ADDR string = "127.0.0.1:28080"
+	// DEFAULT_TCP_ADDR 默认tcp监听地址
+	DEFAULT_TCP_ADDR string = "127.0.0.1:38080"
 	// DEFAULT_SVC_NAME 默认服务名
 	DEFAULT_SVC_NAME string = "default"
 	// 当前运行环境，dev or pro
@@ -39,6 +41,15 @@ func GetGRPCAddr() string {
 	grpcAddr := os.Getenv("GRPC_ADDR")
 	if grpcAddr == "" {
 		return DEFAULT_GRPC_ADDR
+	}
+	return grpcAddr
+}
+
+// GetTCPAddr 读取tcp地址
+func GetTCPAddr() string {
+	grpcAddr := os.Getenv("TCP_ADDR")
+	if grpcAddr == "" {
+		return DEFAULT_TCP_ADDR
 	}
 	return grpcAddr
 }
