@@ -11,7 +11,6 @@ type User struct {
 	Username   string `json:"username" gorm:"column:username"`
 	Nickname   string `json:"nickname" gorm:"column:nickname"`
 	Password   string `json:"password,omitempty" gorm:"column:password"`
-	IsDelete   int8   `json:"-" gorm:"column:is_delete"`
 
 	Token string `json:"token" gorm:"-"` // 登录时使用
 }

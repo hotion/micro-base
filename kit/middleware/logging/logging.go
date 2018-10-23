@@ -24,25 +24,12 @@ type loggingMiddleware struct {
 }
 
 // PostHello 服务层 Hello 日志
-func (mw loggingMiddleware) PostHello(ctx context.Context, name string) (word string, err error) {
-	defer func() {
-		if err != nil {
-			mw.logger.Errorw("PostHello error", "method", "PostHello", "input name", name, "output word", word)
-		} else {
-			mw.logger.Infow("PostHello info", "method", "PostHello", "input name", name, "output word", word)
-		}
-	}()
-	word, err = mw.next.PostHello(ctx, name)
-	return
-}
-
-// PostHello 服务层 Hello 日志
 func (mw loggingMiddleware) Login(ctx context.Context, username, password string) (user *model.User, err error) {
 	defer func() {
 		if err != nil {
-			mw.logger.Errorw("PostHello error", "method", "Login", "input username", username, "output password", password, "err", err)
+			mw.logger.Errorw("PostHello error", "method", "Login", "input username", username, "input password", password, "err", err)
 		} else {
-			mw.logger.Infow("PostHello info", "method", "Login", "input username", username, "output password", password)
+			mw.logger.Infow("PostHello info", "method", "Login", "input username", username, "input password", password)
 		}
 	}()
 	user, err = mw.next.Login(ctx, username, password)

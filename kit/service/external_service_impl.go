@@ -16,7 +16,7 @@ import (
 // Login 用户登录
 func (s basicService) Login(ctx context.Context, username, password string) (user *model.User, err error) {
 	user = new(model.User)
-	password = crypto.Md5String(password)
+	password = crypto.PasswordHash(password)
 	err = user.UserLogin(username, password)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

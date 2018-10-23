@@ -8,15 +8,13 @@ import (
 
 // Endpoints 将所有端点收集到一个结构体中
 type Endpoints struct {
-	PostHelloEndpoint endpoint.Endpoint
-	LoginEndpoint     endpoint.Endpoint
+	LoginEndpoint endpoint.Endpoint
 }
 
 // MakeServerEndpoints 创建端点
 func MakeServerEndpoints(s service.Service) Endpoints {
 	return Endpoints{
-		PostHelloEndpoint: MakeHelloEndpoint(s),
-		LoginEndpoint:     MakeLoginEndpoint(s),
+		LoginEndpoint: MakeLoginEndpoint(s),
 	}
 }
 

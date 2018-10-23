@@ -84,15 +84,6 @@ func (s *tcpServer) GetClientID() string {
 func (s *tcpServer) RouteEndpoint(conn *tcplibrary.Conn, packet *tcppacket.MicroPacket) {
 	var microPacket *tcppacket.MicroPacket // 回复消息使用
 	switch packet.EndpointType {
-	case tcppacket.TCPPostHelloEndpoint:
-		req := new(endpoint.PostHelloRequest)
-		err := json.Unmarshal([]byte(packet.Payload), req)
-		resp, err := s.endpoints.PostHelloEndpoint(context.Background(), req)
-		if err != nil {
-			microPacket = tcppacket.MakeMicroPacket(packet.EndpointType, err, packet.Sequence)
-		} else {
-			microPacket = tcppacket.MakeMicroPacket(packet.EndpointType, resp, packet.Sequence)
-		}
 	case tcppacket.TCPAccountLoginEndpoint:
 		req := new(endpoint.LoginRequest)
 		err := json.Unmarshal([]byte(packet.Payload), req)
