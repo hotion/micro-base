@@ -44,9 +44,9 @@ func main() {
 	/* grpc */
 
 	// transport grpc方式
-	var grpcServer pb.HelloServer
+	var grpcServer pb.AccountServer
 	{
-		grpcServer = transport.NewGRPCServer(endpoints, s, logger)
+		grpcServer = transport.NewGRPCServer(endpoints, logger)
 	}
 
 	// 启动grpc监听
@@ -59,7 +59,7 @@ func main() {
 		logger.Infof("TCP监听成功:%s", config.GetGRPCAddr())
 
 		baseServer := grpc.NewServer()
-		pb.RegisterHelloServer(baseServer, grpcServer)
+		pb.RegisterAccountServer(baseServer, grpcServer)
 
 		err = baseServer.Serve(grpcListener)
 		if err != nil {
@@ -76,7 +76,7 @@ func main() {
 	// transport http方式
 	var httpHandler http.Handler
 	{
-		httpHandler = transport.NewHTTPHandler(endpoints, s, logger)
+		httpHandler = transport.NewHTTPHandler(endpoints, logger)
 	}
 
 	// 启动http监听
@@ -100,7 +100,7 @@ func main() {
 
 	/* tcp */
 	go func() {
-		tcpServer, err := transport.NewTCPHandler(endpoints, s, logger)
+		tcpServer, err := transport.NewTCPHandler(endpoints, logger)
 		if err != nil {
 			logger.Panicf("tcp服务创建错误错误:%v", err)
 			return

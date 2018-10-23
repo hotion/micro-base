@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package pb;
+
+// Account 服务定义
+service Account {
+  // hello word 测试
+  rpc PostHello (HelloRequest) returns (HelloReply) {}
+  // 登录
+  rpc Login (LoginRequest) returns (LoginReply) {}
+}
+
+// 请求参数
+message HelloRequest {
+  string name = 1;
+}
+
+// 响应参数
+message HelloReply {
+  string word = 1;
+}
+
+// 登录
+
+message LoginRequest{
+  string Username = 1;
+  string Password =2;
+}
+
+message LoginReply{
+  string Username = 1;
+  string Nickname = 2;
+  string Password = 3;
+  string Token = 4;
+}

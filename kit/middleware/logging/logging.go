@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/shiguanghuxian/micro-base/kit/service"
+	"github.com/shiguanghuxian/micro-base/model"
 	"github.com/shiguanghuxian/micro-common/log"
 )
 
@@ -32,5 +33,18 @@ func (mw loggingMiddleware) PostHello(ctx context.Context, name string) (word st
 		}
 	}()
 	word, err = mw.next.PostHello(ctx, name)
+	return
+}
+
+// PostHello 服务层 Hello 日志
+func (mw loggingMiddleware) Login(ctx context.Context, username, password string) (user *model.User, err error) {
+	defer func() {
+		if err != nil {
+			mw.logger.Errorw("PostHello error", "method", "Login", "input username", username, "output password", password, "err", err)
+		} else {
+			mw.logger.Infow("PostHello info", "method", "Login", "input username", username, "output password", password)
+		}
+	}()
+	user, err = mw.next.Login(ctx, username, password)
 	return
 }

@@ -2,11 +2,12 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/jinzhu/gorm"
 	"github.com/shiguanghuxian/micro-base/model"
 	"github.com/shiguanghuxian/micro-common/cache"
-	"github.com/shiguanghuxian/micro-common/log"
+	"github.com/shiguanghuxian/micro-common/crypto"
 	"github.com/shiguanghuxian/micro-common/microerror"
 )
 
@@ -15,20 +16,24 @@ import (
 // Login 用户登录
 func (s basicService) Login(ctx context.Context, username, password string) (user *model.User, err error) {
 	user = new(model.User)
+	password = crypto.Md5String(password)
 	err = user.UserLogin(username, password)
 	if err != nil {
-		log.Logger.Infow("登录操作数据库错误", "err", err)
 		if err == gorm.ErrRecordNotFound {
-			err = microerror.ErrRecordNotFound
-		} else {
-			err = microerror.ErrRecordNotFound
+			err = microerror.GetMicroError(10001)
 		}
 		return
 	}
 	// 将登录信息缓存入redis
-	key := cache.GetUserLoginToken()
-	err = cache.GetClient().Set(key, user, 0).Err()
+	key, token := cache.GetUserLoginToken()
+	userJs, _ := json.Marshal(user)
+	err = cache.GetClient().Set(key, string(userJs), 0).Err()
 	if err != nil {
-
+		err = microerror.GetMicroError(10102, err)
+		return
 	}
+
+	user.Token = token
+	user.Password = ""
+	return
 }

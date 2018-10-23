@@ -4,9 +4,9 @@ import (
 	"log"
 	"time"
 
+	"github.com/shiguanghuxian/micro-base/pb"
 	"github.com/shiguanghuxian/micro-common/config"
 	"github.com/shiguanghuxian/micro-common/register"
-	"github.com/shiguanghuxian/micro-base/pb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/resolver"
 )
@@ -16,7 +16,7 @@ var (
 )
 
 // NewGRPCClient 创建grpc客户端
-func NewGRPCClient(etcdAddr string) (pb.HelloClient, error) {
+func NewGRPCClient(etcdAddr string) (pb.AccountClient, error) {
 	if etcdAddr == "" {
 		etcdAddr = config.GetETCDAddr()
 	}
@@ -30,6 +30,6 @@ func NewGRPCClient(etcdAddr string) (pb.HelloClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	client := pb.NewHelloClient(conn)
+	client := pb.NewAccountClient(conn)
 	return client, nil
 }

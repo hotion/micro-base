@@ -6,9 +6,8 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 	"github.com/shiguanghuxian/micro-base/kit/endpoint"
-	"github.com/shiguanghuxian/micro-base/kit/service"
-	"github.com/shiguanghuxian/micro-base/kit/transport/tcppacket"
 	"github.com/shiguanghuxian/micro-common/log"
+	"github.com/shiguanghuxian/micro-common/tcppacket"
 	"github.com/shiguanghuxian/tcplibrary"
 )
 
@@ -20,15 +19,13 @@ import (
 type tcpServer struct {
 	server    *tcplibrary.TCPServer // 服务监听对象
 	endpoints endpoint.Endpoints
-	service   service.Service
 	logger    *log.Log
 }
 
 // NewTCPHandler 创建tcp服务
-func NewTCPHandler(endpoints endpoint.Endpoints, s service.Service, logger *log.Log) (*tcpServer, error) {
+func NewTCPHandler(endpoints endpoint.Endpoints, logger *log.Log) (*tcpServer, error) {
 	srv := &tcpServer{
 		endpoints: endpoints,
-		service:   s,
 		logger:    logger,
 	}
 	liSrv, err := tcplibrary.NewTCPServer(true, srv, &tcppacket.MicroPacket{})
@@ -85,36 +82,32 @@ func (s *tcpServer) GetClientID() string {
 
 // RouteEndpoint 根据消息端点类型，调用制定函数 - 路由
 func (s *tcpServer) RouteEndpoint(conn *tcplibrary.Conn, packet *tcppacket.MicroPacket) {
+	var microPacket *tcppacket.MicroPacket // 回复消息使用
 	switch packet.EndpointType {
 	case tcppacket.TCPPostHelloEndpoint:
 		req := new(endpoint.PostHelloRequest)
 		err := json.Unmarshal([]byte(packet.Payload), req)
-		var resp *tcppacket.MicroPacket
-		if err == nil {
-			word, err := s.endpoints.PostHello(context.Background(), req.Name)
-			if err != nil {
-				resp, err = tcppacket.MakeMicroPacket(packet.EndpointType, 10001, &tcppacket.TCPError{
-					Msg:  err.Error(),
-					Code: 10001,
-				}, packet.Sequence)
-			} else {
-				resp, err = tcppacket.MakeMicroPacket(packet.EndpointType, 0, endpoint.PostHelloResponse{
-					Word: word,
-				}, packet.Sequence)
-			}
-		} else {
-			resp, err = tcppacket.MakeMicroPacket(packet.EndpointType, 10002, &tcppacket.TCPError{
-				Msg:  err.Error(),
-				Code: 10002,
-			}, packet.Sequence)
-			s.logger.Errorw("json解析为PostHelloRequest错误", "err", err)
-		}
-		_, err = conn.SendMessage(resp)
+		resp, err := s.endpoints.PostHelloEndpoint(context.Background(), req)
 		if err != nil {
-			s.logger.Errorw("发送回复消息错误", "err", err)
+			microPacket = tcppacket.MakeMicroPacket(packet.EndpointType, err, packet.Sequence)
+		} else {
+			microPacket = tcppacket.MakeMicroPacket(packet.EndpointType, resp, packet.Sequence)
 		}
-		break
+	case tcppacket.TCPAccountLoginEndpoint:
+		req := new(endpoint.LoginRequest)
+		err := json.Unmarshal([]byte(packet.Payload), req)
+		resp, err := s.endpoints.LoginEndpoint(context.Background(), req)
+		if err != nil {
+			microPacket = tcppacket.MakeMicroPacket(packet.EndpointType, err, packet.Sequence)
+		} else {
+			microPacket = tcppacket.MakeMicroPacket(packet.EndpointType, resp, packet.Sequence)
+		}
 	default:
 		s.logger.Warnw("未找到消息中的端点", "endpoint", packet.EndpointType, "packet", packet)
+		return
+	}
+	_, err := conn.SendMessage(microPacket)
+	if err != nil {
+		s.logger.Errorw("发送回复消息错误", "err", err)
 	}
 }

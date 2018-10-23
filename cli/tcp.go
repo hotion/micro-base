@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/shiguanghuxian/micro-base/kit/transport/tcppacket"
+	"github.com/shiguanghuxian/micro-common/tcppacket"
 	"github.com/shiguanghuxian/tcplibrary"
 )
 
@@ -36,8 +36,11 @@ func (c *Client) OnConnect(conn *tcplibrary.Conn) error {
 		i := 1
 		for {
 			pp := &tcppacket.MicroPacket{
-				Payload:      `{"name":"测试TCP"}`,
-				EndpointType: tcppacket.TCPPostHelloEndpoint,
+				Payload: `{
+					"username":"admin",
+					"password":"111111"
+				}`,
+				EndpointType: tcppacket.TCPAccountLoginEndpoint,
 				Sequence:     uint16(i),
 			}
 			n, err := conn.SendMessage(pp)
