@@ -53,7 +53,7 @@ func main() {
 	go func() {
 		grpcListener, err := net.Listen("tcp", config.GetGRPCAddr())
 		if err != nil {
-			logger.Panicf("TCP监听错误:%v", err)
+			logger.Panicf("GRPC监听错误:%v", err)
 			return
 		}
 		logger.Infof("TCP监听成功:%s", config.GetGRPCAddr())

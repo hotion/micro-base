@@ -26,7 +26,7 @@ func NewGRPCClient(etcdAddr string) (pb.AccountClient, error) {
 
 	log.Println(r.Scheme() + "://" + svcName)
 
-	conn, err := grpc.Dial(r.Scheme()+"://author/"+svcName, grpc.WithBalancerName("round_robin"), grpc.WithInsecure(), grpc.WithTimeout(15*time.Second))
+	conn, err := grpc.Dial(r.Scheme()+"://author/"+svcName, grpc.WithBalancerName("round_robin"), grpc.WithInsecure(), grpc.WithTimeout(10*time.Second))
 	if err != nil {
 		return nil, err
 	}
