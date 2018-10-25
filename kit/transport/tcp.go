@@ -28,10 +28,12 @@ func NewTCPHandler(endpoints endpoint.Endpoints, logger *log.Log) (*tcpServer, e
 		endpoints: endpoints,
 		logger:    logger,
 	}
-	liSrv, err := tcplibrary.NewTCPServer(true, srv, &tcppacket.MicroPacket{})
+	tcpLibrary, err := tcplibrary.NewTCPLibrary(true, srv, &tcppacket.MicroPacket{})
 	if err != nil {
 		return nil, err
 	}
+	liSrv := tcpLibrary.NewTCPServer()
+
 	srv.server = liSrv
 
 	// 设置日志 - 和当前业务保持统一
@@ -66,7 +68,7 @@ func (s *tcpServer) OnClose(conn *tcplibrary.Conn, err error) {
 }
 
 // OnRecMessage 收到客户端发送过来的消息时
-func (s *tcpServer) OnRecMessage(conn *tcplibrary.Conn, v interface{}) {
+func (s *tcpServer) OnRecMessage(ctx context.Context, conn *tcplibrary.Conn, v interface{}) {
 	if packet, ok := v.(*tcppacket.MicroPacket); ok == true {
 		s.RouteEndpoint(conn, packet)
 	} else {
